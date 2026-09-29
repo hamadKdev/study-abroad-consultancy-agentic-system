@@ -1,0 +1,2742 @@
+{
+  "name": "study abroad consultancy agentic system",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c571e2be-a985-49e3-939c-0f6d96882efd",
+              "name": "body.name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "2c70ef3d-db86-4e32-a121-75e9a3d20dc0",
+              "name": "body.phone",
+              "value": "={{ $json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "2312a57d-fc0f-4abc-a2e1-cb6ef6526081",
+              "name": "body.message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -288,
+        384
+      ],
+      "id": "5d1a0c18-d40d-4208-84f5-ec7cf2c5deb9",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"agent\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"LEAD_AGENT\",\n        \"UNIVERSITY_AGENT\",\n        \"DOCUMENT_AGENT\",\n        \"FOLLOW_UP_AGENT\",\n        \"STAFF_HANDOFF\",\n        \"OTHER\"\n      ]\n    },\n    \"intent\": {\n      \"type\": \"string\"\n    },\n    \"student_message\": {\n      \"type\": \"string\"\n    },\n    \"confidence\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"high\",\n        \"medium\",\n        \"low\"\n      ]\n    }\n  },\n  \"required\": [\n    \"agent\",\n    \"intent\",\n    \"student_message\",\n    \"confidence\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        608
+      ],
+      "id": "e414f86d-5618-4068-885d-448f2615dce9",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -64,
+        608
+      ],
+      "id": "37610738-bbd0-40e9-b258-70075f887962",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "s99HFiUBnF37pctM",
+          "name": "Google Gemini(PaLM) Api account 30"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.phone }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        64,
+        608
+      ],
+      "id": "185ee93a-7503-451d-82c9-e845ce0fedc6",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e7e15640-11d9-4665-884d-1ec11acea7ee",
+              "name": "output.agent",
+              "value": "={{ $json.output.agent }}",
+              "type": "string"
+            },
+            {
+              "id": "3a8dc145-14be-440b-a169-5b9ac9244925",
+              "name": "output.intent",
+              "value": "={{ $json.output.intent }}",
+              "type": "string"
+            },
+            {
+              "id": "1d7a899f-d31b-4b11-b69f-d9ca4069cdee",
+              "name": "output.student_message",
+              "value": "={{ $json.output.student_message }}",
+              "type": "string"
+            },
+            {
+              "id": "5cb99218-1608-4c1c-adb2-3d6f218b08d1",
+              "name": "output.confidence",
+              "value": "={{ $json.output.confidence }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        384
+      ],
+      "id": "667d7a14-cf6a-4249-b4a9-aae78b81580a",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.agent }}",
+                    "rightValue": "LEAD_AGENT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "571ea08b-326d-4f33-b9fe-dc4fa4ad292a"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "LEAD_AGENT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a498dc86-0007-442f-b51f-fab08f519e15",
+                    "leftValue": "={{ $json.output.agent }}",
+                    "rightValue": "UNIVERSITY_AGENT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "UNIVERSITY_AGENT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "96542100-3d3a-4bab-86fb-eae7b2a3dc4c",
+                    "leftValue": "={{ $json.output.agent }}",
+                    "rightValue": "DOCUMENT_AGENT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DOCUMENT_AGENT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d9bc044a-af6c-4270-a263-a41ef7d42a8a",
+                    "leftValue": "={{ $json.output.agent }}",
+                    "rightValue": "FOLLOW_UP_AGENT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "FOLLOW_UP_AGENT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "96810d4f-3558-41f9-bf3c-3f59fa6a783c",
+                    "leftValue": "={{ $json.output.agent }}",
+                    "rightValue": "STAFF_HANDOFF",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "STAFF_HANDOFF"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        336
+      ],
+      "id": "44f4bfaf-2846-422e-ae1c-2c3f9125d423",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"lead_id\": {\n      \"type\": \"string\"\n    },\n    \"action\": {\n      \"type\": \"string\",\n      \"enum\": [\"created\", \"updated\"]\n    },\n    \"full_name\": {\n      \"type\": \"string\"\n    },\n    \"phone\": {\n      \"type\": \"string\"\n    },\n    \"country\": {\n      \"type\": \"string\"\n    },\n    \"marks\": {\n      \"type\": \"string\"\n    },\n    \"ielts\": {\n      \"type\": \"string\"\n    },\n    \"budget\": {\n      \"type\": \"string\"\n    },\n    \"last_reply\": {\n      \"type\": \"string\"\n    },\n    \"stage\": {\n      \"type\": \"string\"\n    },\n    \"customer_message\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"lead_id\",\n    \"action\",\n    \"full_name\",\n    \"phone\",\n    \"country\",\n    \"marks\",\n    \"ielts\",\n    \"budget\",\n    \"last_reply\",\n    \"stage\",\n    \"customer_message\"\n  ]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1296,
+        -304
+      ],
+      "id": "23566f92-046c-4806-8f32-d1ebcff380bd",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        -304
+      ],
+      "id": "c8cb5433-927e-452c-80b3-cee4bee1ee16",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "s99HFiUBnF37pctM",
+          "name": "Google Gemini(PaLM) Api account 30"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.output.student_message }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        1040,
+        -304
+      ],
+      "id": "377c1eed-286f-4983-b8ea-35442efd8499",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1168,
+        -304
+      ],
+      "id": "cdaec3bc-6d16-4495-9ed1-ce653b3ba851",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"found\": {\n      \"type\": \"boolean\"\n    },\n    \"university\": {\n      \"type\": \"string\"\n    },\n    \"country\": {\n      \"type\": \"string\"\n    },\n    \"program\": {\n      \"type\": \"string\"\n    },\n    \"fee_per_year\": {\n      \"type\": \"string\"\n    },\n    \"deadline\": {\n      \"type\": \"string\"\n    },\n    \"min_marks\": {\n      \"type\": \"string\"\n    },\n    \"min_ielts\": {\n      \"type\": \"string\"\n    },\n    \"documents_needed\": {\n      \"type\": \"string\"\n    },\n    \"answer\": {\n      \"type\": \"string\"\n    },\n    \"requires_staff\": {\n      \"type\": \"boolean\"\n    }\n  },\n  \"required\": [\n    \"found\",\n    \"university\",\n    \"country\",\n    \"program\",\n    \"fee_per_year\",\n    \"deadline\",\n    \"min_marks\",\n    \"min_ielts\",\n    \"documents_needed\",\n    \"answer\",\n    \"requires_staff\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1360,
+        96
+      ],
+      "id": "fdb41687-239f-490f-b03c-dd4963ea6438",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-image-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        848,
+        96
+      ],
+      "id": "21a590bb-f57b-4aad-955d-a24db12d134b",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "s99HFiUBnF37pctM",
+          "name": "Google Gemini(PaLM) Api account 30"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1676542064,
+          "mode": "list",
+          "cachedResultName": "Universities",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=1676542064"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        976,
+        96
+      ],
+      "id": "00300318-af18-4574-9f34-f3ca3906e187",
+      "name": "Get row(s) in sheet in Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1031790204,
+          "mode": "list",
+          "cachedResultName": "Programs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=1031790204"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1104,
+        96
+      ],
+      "id": "f276e4c5-f5cf-4589-814f-b065a5ed9650",
+      "name": "Get row(s) in sheet in Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 435520273,
+          "mode": "list",
+          "cachedResultName": "Conversations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=435520273"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "conversation_id"
+          ],
+          "schema": [
+            {
+              "id": "conversation_id",
+              "displayName": "conversation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "intent",
+              "displayName": "intent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1232,
+        96
+      ],
+      "id": "a4b59d9c-96e9-4fa7-bc75-de9593c94277",
+      "name": "Append row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        848,
+        1408
+      ],
+      "id": "575dd90b-3cc4-4b9d-99d0-a72b96e534a2",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "s99HFiUBnF37pctM",
+          "name": "Google Gemini(PaLM) Api account 30"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 388094971,
+          "mode": "list",
+          "cachedResultName": "Documents",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=388094971"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        976,
+        1408
+      ],
+      "id": "e66c9c79-a725-4a61-8c65-45d60a6701f0",
+      "name": "Get row(s) in sheet in Google Sheets3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1031790204,
+          "mode": "list",
+          "cachedResultName": "Programs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=1031790204"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1104,
+        1408
+      ],
+      "id": "54f12789-8750-4a60-a505-b25bff3b8254",
+      "name": "Get row(s) in sheet in Google Sheets4",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"found\": {\n      \"type\": \"boolean\"\n    },\n    \"document_id\": {\n      \"type\": \"string\"\n    },\n    \"lead_id\": {\n      \"type\": \"string\"\n    },\n    \"document_type\": {\n      \"type\": \"string\"\n    },\n    \"result\": {\n      \"type\": \"string\",\n      \"enum\": [\"OK\", \"Problem\"]\n    },\n    \"reason\": {\n      \"type\": \"string\"\n    },\n    \"requires_staff\": {\n      \"type\": \"boolean\"\n    },\n    \"customer_message\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"found\",\n    \"document_id\",\n    \"lead_id\",\n    \"document_type\",\n    \"result\",\n    \"reason\",\n    \"requires_staff\",\n    \"customer_message\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1360,
+        1408
+      ],
+      "id": "58a9a409-184e-4178-9666-b99cfc314dee",
+      "name": "Structured Output Parser3"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1668877745,
+          "mode": "list",
+          "cachedResultName": "Document_Results",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=1668877745"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1232,
+        1408
+      ],
+      "id": "671ade02-e7fc-43d3-86fd-2a300ab69513",
+      "name": "Get row(s) in sheet in Google Sheets5",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"follow_up_id\": {\n      \"type\": \"string\"\n    },\n    \"lead_id\": {\n      \"type\": \"string\"\n    },\n    \"student_name\": {\n      \"type\": \"string\"\n    },\n    \"days_inactive\": {\n      \"type\": \"integer\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"follow_up_id\",\n    \"lead_id\",\n    \"student_name\",\n    \"days_inactive\",\n    \"message\",\n    \"status\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1296,
+        496
+      ],
+      "id": "b19d3411-429f-4bd2-b927-2429186447e4",
+      "name": "Structured Output Parser4"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        496
+      ],
+      "id": "f4a2d15c-5c19-4e23-8ebc-78ebd4ba15cd",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "s99HFiUBnF37pctM",
+          "name": "Google Gemini(PaLM) Api account 30"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        496
+      ],
+      "id": "0fea4b76-9a83-4dbd-a283-a9e8c42781fb",
+      "name": "Get row(s) in sheet in Google Sheets6",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 738208251,
+          "mode": "list",
+          "cachedResultName": "Follow_Ups",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=738208251"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "follow_up_id",
+              "displayName": "follow_up_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "student_name",
+              "displayName": "student_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_reply",
+              "displayName": "last_reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "days_inactive",
+              "displayName": "days_inactive",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1168,
+        496
+      ],
+      "id": "aab11194-dd8a-4fdd-aac2-ecf0ff1f32d4",
+      "name": "Append row in sheet in Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fb722434-8455-43c9-ba12-ed3de105218c",
+              "name": "output.follow_up_id",
+              "value": "={{ $json.output.follow_up_id }}",
+              "type": "string"
+            },
+            {
+              "id": "3717efec-6a99-47cd-bde6-0d4e4fa68df9",
+              "name": "output.lead_id",
+              "value": "={{ $json.output.lead_id }}",
+              "type": "string"
+            },
+            {
+              "id": "a4b341c7-6a44-4922-84b0-926329b2b324",
+              "name": "output.student_name",
+              "value": "={{ $json.output.student_name }}",
+              "type": "string"
+            },
+            {
+              "id": "e55407a0-824d-4d11-8ac4-66be8da82dcb",
+              "name": "output.days_inactive",
+              "value": "={{ $json.output.days_inactive }}",
+              "type": "number"
+            },
+            {
+              "id": "02be52d0-ef02-44e7-aa0f-ce0927d24248",
+              "name": "output.message",
+              "value": "={{ $json.output.message }}",
+              "type": "string"
+            },
+            {
+              "id": "50674e23-20a2-4ae6-8ddf-9bb5d741ab8f",
+              "name": "output.status",
+              "value": "={{ $json.output.status }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1568,
+        384
+      ],
+      "id": "f3aa6a17-945f-4488-b9dd-771d995dc587",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        2384,
+        608
+      ],
+      "id": "b362bcc3-c424-48fa-a56e-0a30f506200a",
+      "name": "Google Gemini Chat Model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "s99HFiUBnF37pctM",
+          "name": "Google Gemini(PaLM) Api account 30"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"message_id\": {\n      \"type\": \"string\"\n    },\n    \"approval_id\": {\n      \"type\": \"string\"\n    },\n    \"lead_id\": {\n      \"type\": \"string\"\n    },\n    \"student_name\": {\n      \"type\": \"string\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"message_id\",\n    \"approval_id\",\n    \"lead_id\",\n    \"student_name\",\n    \"message\",\n    \"status\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2768,
+        608
+      ],
+      "id": "23df3cd6-028d-4b10-abab-955edd9f34f1",
+      "name": "Structured Output Parser6"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Save an approved student message in the Sent_Messages Google Sheet.\n\nUse this tool ONLY after an approval request has been found in Approval_Queue with status \"Approved\".\n\nAlways create a NEW row. Never update, overwrite, or delete an existing row.\n\nFill these fields:\n- message_id: generate a unique message ID\n- approval_id: take from the approved Approval_Queue record\n- lead_id: take from the approved Approval_Queue record\n- student_name: take from the approved Approval_Queue record\n- message: use the exact approved message from Approval_Queue\n- sent_at: current date and time\n- status: \"Sent\"\n\nDo not use this tool for Pending or unapproved messages.",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2079015431,
+          "mode": "list",
+          "cachedResultName": "Sent_Messages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=2079015431"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "lead_id": "={{ $('Edit Fields2').item.json.output.lead_id }}",
+            "student_name": "={{ $('Edit Fields2').item.json.output.student_name }}",
+            "status": "={{ $('Edit Fields2').item.json.output.status }}",
+            "message": "={{ $('Edit Fields2').item.json.output.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "approval_id",
+              "displayName": "approval_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "student_name",
+              "displayName": "student_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sent_at",
+              "displayName": "sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2512,
+        608
+      ],
+      "id": "43459374-69d5-4903-901e-cc9e4f3abf32",
+      "name": "Append row in sheet in Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Find staff approval requests in the Approval_Queue Google Sheet.\n\nUse this tool to check whether a student's message has been approved by staff.\n\nSearch for the relevant approval request using the available student information such as lead_id, student_name, or approval_id.\n\nRead these fields:\n- approval_id\n- lead_id\n- student_name\n- message\n- type\n- status\n- created_at\n- approved_at\n\nIMPORTANT:\n- Only a request with status \"Approved\" can be processed for sending.\n- If status is \"Pending\", do NOT send the message.\n- Do not modify, update, or delete any Approval_Queue record.\n- Return the exact approved message without changing it.",
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1694409981,
+          "mode": "list",
+          "cachedResultName": "Approval_Queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=1694409981"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2640,
+        608
+      ],
+      "id": "1f860d4d-798c-4148-a0ce-f82ea8919550",
+      "name": "Get row(s) in sheet in Google Sheets9",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.1-flash-lite-image",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1792,
+        608
+      ],
+      "id": "b7150438-d093-45c1-8f49-8d0c56110eb0",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "s99HFiUBnF37pctM",
+          "name": "Google Gemini(PaLM) Api account 30"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"status\",\n    \"message\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2176,
+        608
+      ],
+      "id": "bfa43d8b-cc2a-42b9-9187-26e6d7f60100",
+      "name": "Structured Output Parser5"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get row(s) in sheet in Google SheFind the student's follow-up record in the Follow_Ups Google Sheet.\n\nSearch using the student's name or phone number.\n\nRead these fields:\n- follow_up_id\n- lead_id\n- last_reply\n- days_inactive\n- message\n- status\n\nOnly process records where status is:\nPending Approval\n\nDo not update, delete, or modify any Follow_Ups record.",
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 738208251,
+          "mode": "list",
+          "cachedResultName": "Follow_Ups",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=738208251"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1920,
+        608
+      ],
+      "id": "f13d1878-7b20-4d83-bd53-b681099aea22",
+      "name": "Get row(s) in sheet in Google Sheets8",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1694409981,
+          "mode": "list",
+          "cachedResultName": "Approval_Queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=1694409981"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lead_id": "={{ $json.output.lead_id }}",
+            "student_name": "={{ $json.output.student_name }}",
+            "message": "={{ $json.output.message }}",
+            "status": "={{ $json.output.status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "approval_id",
+              "displayName": "approval_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "student_name",
+              "displayName": "student_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "approved_at",
+              "displayName": "approved_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2048,
+        608
+      ],
+      "id": "caefb52d-d2c2-489f-b230-decfb06527b5",
+      "name": "Append row in sheet in Google Sheets3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output.customer_message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2576,
+        -416
+      ],
+      "id": "4063b4db-c0a0-4db2-b6ba-d7c1ce46ba3c",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5e29b775-fce4-4637-b40f-846cfa150677",
+              "name": "output.customer_message",
+              "value": "={{ $('Lead Agent').item.json.output.customer_message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1984,
+        -416
+      ],
+      "id": "02b268cc-bbeb-459a-a8de-80cbe0bb32f0",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lead_id": "={{ $json.output.lead_id }}",
+            "full_name": "={{ $json.output.full_name }}",
+            "phone": "={{ $json.output.phone }}",
+            "country": "={{ $json.output.country }}",
+            "marks": "={{ $json.output.marks }}",
+            "ielts": "={{ $json.output.ielts }}",
+            "budget": "={{ $json.output.budget }}",
+            "last_reply": "={{ $json.output.last_reply }}",
+            "stage": "={{ $json.output.stage }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "full_name",
+              "displayName": "full_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "country",
+              "displayName": "country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "marks",
+              "displayName": "marks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ielts",
+              "displayName": "ielts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "budget",
+              "displayName": "budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_reply",
+              "displayName": "last_reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "stage",
+              "displayName": "stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1568,
+        -416
+      ],
+      "id": "eeeae3e4-1eea-4d25-84a7-d507e55f1e36",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1031790204,
+          "mode": "list",
+          "cachedResultName": "Programs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=1031790204"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "university": "={{ $json.output.university }}",
+            "country": "={{ $json.output.country }}",
+            "program": "={{ $json.output.program }}",
+            "fee_per_year": "={{ $json.output.fee_per_year }}",
+            "deadline": "={{ $json.output.deadline }}",
+            "min_marks": "={{ $json.output.min_marks }}",
+            "min_ielts": "={{ $json.output.min_ielts }}",
+            "documents_needed": "={{ $json.output.documents_needed }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "program_id",
+              "displayName": "program_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "university",
+              "displayName": "university",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "country",
+              "displayName": "country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "program",
+              "displayName": "program",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fee_per_year",
+              "displayName": "fee_per_year",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "deadline",
+              "displayName": "deadline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "min_marks",
+              "displayName": "min_marks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "min_ielts",
+              "displayName": "min_ielts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "documents_needed",
+              "displayName": "documents_needed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1568,
+        -16
+      ],
+      "id": "4d9f8372-32d4-452e-b740-b364a6b68957",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "94111ed3-942f-4e90-aaa9-dba7dc66ae61",
+              "name": "output.answer",
+              "value": "={{ $('University Agent').item.json.output.answer }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1984,
+        -16
+      ],
+      "id": "29da27ac-0215-4aaf-96ff-5986664c4e72",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $('Manager agent').item.json.output.student_message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2576,
+        -16
+      ],
+      "id": "8b34f47b-f59d-4195-8eb2-19aad2162b67",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0a7f73df-6dee-45f6-9164-017d7fd24e24",
+              "name": "output.document_id",
+              "value": "={{ $json.output.document_id }}",
+              "type": "string"
+            },
+            {
+              "id": "2b05f8a8-a69f-4446-9a4f-28ba85a7833a",
+              "name": "output.lead_id",
+              "value": "={{ $json.output.lead_id }}",
+              "type": "string"
+            },
+            {
+              "id": "8bcc71e6-1255-4e30-995b-3b63f6604805",
+              "name": "output.result",
+              "value": "={{ $json.output.result }}",
+              "type": "string"
+            },
+            {
+              "id": "93114d01-56c3-4fae-9023-e759acd55b3b",
+              "name": "output.reason",
+              "value": "={{ $json.output.reason }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1568,
+        1184
+      ],
+      "id": "28fe7268-378a-46f5-bf2a-2a94cc8fcb22",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw",
+          "mode": "list",
+          "cachedResultName": "Study Abroad CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1668877745,
+          "mode": "list",
+          "cachedResultName": "Document_Results",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jXgOY7LQ4v37nqxXi77W-IgGey2UlnOe1Bsbh1qsPrw/edit#gid=1668877745"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "document_id": "={{ $json.output.document_id }}",
+            "lead_id": "={{ $json.output.lead_id }}",
+            "result": "={{ $json.output.result }}",
+            "reason": "={{ $json.output.reason }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "result_id",
+              "displayName": "result_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "document_id",
+              "displayName": "document_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "result",
+              "displayName": "result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "checked_at",
+              "displayName": "checked_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1984,
+        1184
+      ],
+      "id": "2818c8ef-b6e9-4b79-a1c2-43eb7fc97085",
+      "name": "Append row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0hOK7ZnvLDwbB1TT",
+          "name": "Google Sheets account 17"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $('Documents Agent').item.json.output.customer_message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2576,
+        1184
+      ],
+      "id": "4ea58728-c80f-42a9-b10f-a2f51e291b44",
+      "name": "Respond to Webhook3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ed573ef0-c2af-40a0-a416-89fe970fb52a",
+              "name": "output.message",
+              "value": "={{ $json.output.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2976,
+        384
+      ],
+      "id": "182f18b8-1865-4d54-a659-992e46d03a63",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Student information received from the Manager Agent.\n\nPlease extract the available lead information from the following data and create or update the lead accordingly:\n\nDecide which specialist agent should handle the student's request.\n\nIMPORTANT:\n- If the student's main request is about university, program, fees, deadline, IELTS, marks, or required documents → UNIVERSITY_AGENT.\n- If the student is providing personal information for creating/updating a lead → LEAD_AGENT.\n- If the student is asking about a university that may not be in our list, it is STILL UNIVERSITY_AGENT. The University Agent will check the Programs sheet and decide if staff is needed.\n- Do not choose LEAD_AGENT just because name and phone are present.\n\nStudent Name:\n{{ $json.body.name }}\n\nStudent Phone:\n{{ $json.body.phone }}\n\nStudent Message:\n{{ $json.body.message }}\n\n\n\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are the Manager Agent for Nowshera Study Abroad Consultants.\n\nYour job is ONLY to understand the student's message and decide which specialist agent should handle it.\n\nYou do NOT answer the student's question yourself.\nYou do NOT invent university information.\nYou do NOT check documents.\nYou do NOT create or update leads.\nYou do NOT send messages.\n\nAvailable specialist agents:\n\n1. LEAD_AGENT\nUse when the student provides or wants to update personal information such as:\n- Name\n- Phone number\n- Country\n- Marks\n- IELTS score\n- Budget\n- Study level\n- Personal details\n\n2. UNIVERSITY_AGENT\nUse when the student asks about:\n- Universities\n- Programs\n- Fees\n- Deadlines\n- Minimum marks\n- IELTS requirements\n- Required documents\n- University/program availability\n\n3. DOCUMENT_AGENT\nUse when the student uploads or asks to check:\n- Passport\n- Transcript\n- IELTS result\n- Personal statement\n- Other application documents\n\n4. FOLLOW_UP_AGENT\nUse when the request is about:\n- Following up with a student\n- Reminder\n- Student being inactive\n- Follow-up message\n\n5. STAFF_HANDOFF\nUse when:\n- The student asks about a university/program that may not be in the office database\n- The question requires staff confirmation\n- The request cannot safely be handled by the available agents\n\n6. OTHER\nUse for unrelated questions that are not about study abroad.\n\nIMPORTANT RULES:\n- Never make up information.\n- Never promise that a student will be accepted.\n- Never make admission decisions.\n- Never send messages.\n- Never select more than one agent.\n- Return ONLY valid JSON.\n- Do not include markdown.\n- Do not include explanations outside the JSON.\n\nReturn exactly this format:\n\n{\n  \"agent\": \"LEAD_AGENT | UNIVERSITY_AGENT | DOCUMENT_AGENT | FOLLOW_UP_AGENT | STAFF_HANDOFF | OTHER\",\n  \"intent\": \"short description of the student's intent\",\n  \"student_message\": \"original student message\",\n  \"confidence\": \"high | medium | low\"\n}\nFOLLOW-UP ROUTING RULE:\n\nIf the student message is asking to follow up, reminding the student,\nchecking back with an inactive student, or the request is being processed\nbecause the student has been inactive for several days, choose:\n\nFOLLOW_UP_AGENT\n\nImportant:\nDo NOT choose UNIVERSITY_AGENT just because the message mentions a country,\nuniversity, or study-abroad interest.\n\nExamples:\n- \"Follow up with Hamza\" → FOLLOW_UP_AGENT\n- \"Send a reminder to Hamza\" → FOLLOW_UP_AGENT\n- \"Hamza has not replied for 4 days\" → FOLLOW_UP_AGENT\n- \"Please check on this student\" → FOLLOW_UP_AGENT\n\nUNIVERSITY_AGENT should ONLY be selected when the student is actively asking\nfor university/program information such as fees, deadlines, IELTS, marks,\nor required documents."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        0,
+        384
+      ],
+      "id": "78abf764-5b58-49e6-b3b0-c1669807e570",
+      "name": "Manager agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Webhook').item.json.body.name }}\n{{ $('Webhook').item.json.body.phone }}\n\n{{ $json.output.student_message }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are the Lead Management Agent for Nowshera Study Abroad Consultants.\n\nYour job is to manage student leads in the CRM using the connected Google Sheets \"Leads\" tab.\n\nYour responsibilities:\n\n1. Extract available information from the student's message:\n   - Full name\n   - Phone\n   - Country\n   - Marks\n   - IELTS score\n   - Budget\n   - Study level if available\n\n2. Use the student's PHONE NUMBER as the unique identifier.\n\n3. Before creating a lead, search the Google Sheets \"Leads\" tab for the same phone number.\n\n4. If the phone number already exists:\n   - Do NOT create a duplicate.\n   - Keep the existing lead_id.\n   - Update only the information provided by the student.\n   - Keep existing information if the student did not provide a new value.\n   - Update last_reply to the current interaction.\n\n5. If the phone number does not exist:\n   - Create a new lead.\n   - Generate/use a unique lead_id.\n   - Set stage to \"New\".\n   - Save the lead in the Google Sheets \"Leads\" tab.\n\n6. Google Sheets columns are:\n   lead_id\n   full_name\n   phone\n   country\n   marks\n   ielts\n   budget\n   last_reply\n   stage\n\nRules:\n- Never create duplicate leads for the same phone number.\n- Never invent missing information.\n- Do not modify information that the student has not provided.\n- Do not answer university questions.\n- Do not check documents.\n- Do not send messages.\n- Use the Google Sheets tool to actually search, create, or update the lead.\n- After the Google Sheets operation, return the final lead information.\n- Return ONLY valid JSON.\nIMPORTANT OUTPUT RULE:\n\nAfter successfully creating or updating the lead, return ONLY valid JSON.\n\nYou MUST return all 10 fields:\n\nlead_id\naction\nfull_name\nphone\ncountry\nmarks\nielts\nbudget\nlast_reply\nstage\n\nEvery field must contain a string value.\n\nIf a value was not provided by the student, use:\n\"Not provided\"\n\nDo not leave any field empty.\nDo not return markdown.\nDo not add explanations outside the JSON.\nAfter successfully creating or updating the lead, generate a short customer-facing message.\n\nThe customer_message must:\n- Confirm that the student's information was saved or updated.\n- Be polite and simple.\n- Not mention lead_id, Google Sheets, internal agents, or internal data.\n- Not make admission or visa promises.\n\nAlways return customer_message as a string.\nIMPORTANT OUTPUT RULES:\n\nYou MUST return all required fields every time.\n\nThe output MUST contain exactly these fields:\n\nlead_id\naction\nfull_name\nphone\ncountry\nmarks\nielts\nbudget\nlast_reply\nstage\ncustomer_message\n\nEvery field MUST be a string.\n\nIf any information is missing, use exactly:\n\"Not provided\"\n\nNever leave a field empty.\n\naction MUST be either:\n\"created\"\nor\n\"updated\"\n\ncustomer_message MUST always contain a short customer-facing confirmation.\n\nExample:\n\n{\n  \"lead_id\": \"L004\",\n  \"action\": \"created\",\n  \"full_name\": \"Sara Ahmed\",\n  \"phone\": \"03001234567\",\n  \"country\": \"UK\",\n  \"marks\": \"82%\",\n  \"ielts\": \"6.5\",\n  \"budget\": \"£25000 per year\",\n  \"last_reply\": \"Today\",\n  \"stage\": \"New\",\n  \"customer_message\": \"Thank you Sara. Your information has been saved successfully.\"\n}\n\nDo not return markdown.\nDo not return explanations.\nDo not return extra fields.\nReturn ONLY valid JSON matching the required schema."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1040,
+        -528
+      ],
+      "id": "d46e8290-50d1-4928-a261-c1fa5581090f",
+      "name": "Lead Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Use the connected Universities and Programs Google Sheets tools to answer the student's question.\n\nFirst identify what the student is asking.\n\nIf the question is about a university, search the Universities tool.\n\nIf the question is about a program, fee, deadline, minimum marks, IELTS, or required documents, search the Programs tool.\n\nIf both university and program information are needed, use BOTH tools.\n\nUse ONLY information returned by the Google Sheets tools.\n\nIf the requested information is not found:\n- found = false\n- requires_staff = true\n- Do not guess or use general knowledge.\n\nAfter preparing the answer, use the Conversations tool to save:\n1. The student's original message.\n2. The agent's final answer.\n\n\nstudent anme :{{ $('Edit Fields').item.json.body.name }}\nStudent Phone:{{ $('Edit Fields').item.json.body.phone }}\n\nStudent Message:{{ $json.output.student_message }}\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are the University Information Agent for Nowshera Study Abroad Consultants.\n\nYour job is to answer student questions about universities and programs using ONLY the connected Google Sheets tools.\n\n## AVAILABLE TOOLS\n\n### 1. Universities\n\nThis tool contains the official university information.\n\nUse it to search for:\n\n* University name\n* Country\n* Available university information\n\nAlways use this tool when the student asks about a university.\n\n### 2. Programs\n\nThis tool contains the official program information.\n\nUse it to search for:\n\n* University\n* Country\n* Program name\n* Fee per year\n* Application deadline\n* Minimum marks\n* Minimum IELTS\n* Required documents\n\nAlways use this tool when the student asks about a program, fee, deadline, marks, IELTS, or required documents.\n\n### 3. Conversations\n\nThis tool stores conversation history.\n\nUse it to automatically save:\n\n* Student's original message\n* Agent's final answer\n\nAlways add new records. Never delete or overwrite previous conversations.\n\n## IMPORTANT RULES\n\n1. Universities and Programs are the ONLY sources of truth.\n2. ALWAYS search the relevant Google Sheet before answering.\n3. NEVER use general knowledge to fill missing information.\n4. NEVER invent university or program information.\n5. If the requested university is not found in Universities:\n\n   * found = false\n   * requires_staff = true\n   * Do not guess the information.\n6. If the university exists but the requested program is not found in Programs:\n\n   * found = false\n   * requires_staff = true\n   * Do not guess the program information.\n7. Return fees, deadlines, marks, IELTS and documents exactly as stored in Programs.\n8. Never promise admission or acceptance.\n9. Never make admission decisions.\n10. Never modify Universities or Programs data.\n11. Do not send messages directly to students.\n\n## CONVERSATION LOGGING\n\nAfter preparing the final answer, use the Conversations tool to save the conversation.\n\nSave the student's message:\n\n* sender = student\n* message = student's original message\n* phone = student's phone if available\n* timestamp = current date/time\n* intent = detected intent\n\nThen save the agent's response:\n\n* sender = agent\n* message = final answer\n* phone = student's phone if available\n* timestamp = current date/time\n* intent = same intent\n\nDo not skip conversation logging.\n\n## PROCESS\n\n1. Identify what the student is asking.\n2. Search Universities if the request is about a university.\n3. Search Programs if the request is about a program or program requirements.\n4. Use both tools when both university and program information are needed.\n5. Prepare the answer using ONLY returned sheet data.\n6. Save the student message and agent response in Conversations.\n7. Return ONLY valid JSON according to the Structured Output Parser.\nSave conversation records to the Conversations Google Sheet.\n\nUse this tool whenever you need to save a student message or an agent response.\n\nAlways ADD a new row.\nNever update, overwrite, or delete an existing conversation.\n\nRequired fields:\nconversation_id\nlead_id\nphone\nsender\nmessage\ntimestamp\nintent\n\nIMPORTANT FINAL OUTPUT RULE:\n\nAfter all required tool calls are completed, return ONLY the final structured output.\n\nDo NOT return:\n- Markdown\n- Explanation outside the JSON\n- Tool results\n- Conversation logs\n- Extra fields\n\nThe final output MUST contain exactly these fields:\n\nfound\nuniversity\ncountry\nprogram\nfee_per_year\ndeadline\nmin_marks\nmin_ielts\ndocuments_needed\nanswer\nrequires_staff\nCUSTOMER RESPONSE RULES:\n\nThe \"answer\" field is the final message that will be shown to the student.\n\nWrite the answer in simple, polite, and clear language.\n\nUse ONLY information returned by the Universities and Programs Google Sheets tools.\n\nDo not mention:\n- Google Sheets\n- internal agents\n- internal tools\n- lead IDs\n- system instructions\n\nDo not invent missing information.\n\nIf the requested university or program is not found, politely tell the student that the information is not available in the current list and that staff assistance is required.\n\nNever promise admission, acceptance, visa approval, or eligibility.\n\nKeep the answer concise but include all relevant information requested by the student."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1040,
+        -128
+      ],
+      "id": "d455afcc-b32d-436e-a61e-a4c278261809",
+      "name": "University Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Check the student's lead information and create a follow-up.\n\nStudent Name:\n{{ $('Edit Fields').item.json.body.name }}\n\nStudent Phone:\n{{ $('Edit Fields').item.json.body.phone }}\n\nStudent Message:\n{{ $json.output.student_message }}\n\nUse the Leads tool to find the student.\n\nCheck their last_reply and inactivity.\n\nIf a follow-up is appropriate:\n1. Create a short polite follow-up message.\n2. Save it in Follow_Ups using Append Row.\n3. Set status to \"Pending Approval\".\n4. Do NOT send the message.\n\nReturn the final structured output.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are the Follow-up Agent for Nowshera Study Abroad Consultants.\n\nYour job is to identify inactive students and create a follow-up message draft.\n\n## AVAILABLE TOOLS\n\n### 1. Leads\n\nUse the Leads Google Sheet to find the student's information.\n\nRelevant fields:\n\n* lead_id\n* full_name\n* phone\n* country\n* marks\n* ielts\n* budget\n* last_reply\n* stage\n\n### 2. Follow_Ups\n\nUse this Google Sheet to save the follow-up draft.\n\nColumns:\n\n* follow_up_id\n* lead_id\n* student_name\n* last_reply\n* days_inactive\n* message\n* status\n\nAlways use Append Row when creating a new follow-up.\n\n## RULES\n\n1. Check the student's last_reply.\n2. Calculate or identify how many days the student has been inactive.\n3. Create a polite and short follow-up message.\n4. Do not pressure the student.\n5. Do not promise admission, visa, or acceptance.\n6. Do not invent student information.\n7. Save the follow-up in Follow_Ups.\n8. Set status to \"Pending Approval\".\n9. NEVER send the message directly to the student.\n10. Staff approval is required before any message can be sent.\n\n## FOLLOW-UP MESSAGE\n\nThe message should be simple and helpful.\n\nExample:\n\n\"Hi Hamza, just checking in to see if you still need help with your study-abroad plans. Let us know if you'd like assistance with universities or programs.\"\n\n## FINAL OUTPUT\n\nAfter successfully saving the follow-up in Follow_Ups, return ONLY valid JSON.\nWhen creating a follow-up, use Append Row in Follow_Ups and fill ALL fields:\nfollow_up_id\nlead_id\nlast_reply\ndays_inactive\nmessage\nstatus\n\nSet status to \"Pending Approval\".\nDo not send the message.\n",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1040,
+        272
+      ],
+      "id": "d7bd577e-7acf-4597-8b08-4406a7f61b98",
+      "name": "Follow_up agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Check the student's document using the connected Documents, Programs, and Document_Results tools.\n\nStudent Name:\n{{ $('Webhook').item.json.body.name }}\n\nStudent Phone:\n{{ $('Webhook').item.json.body.phone }}\n\nStudent Message:\n{{ $json.output.student_message }}\n\nFollow these steps:\n\n1. Find the student's document using Documents.\n2. Check the document information.\n3. Use Programs only if required documents need to be checked.\n4. Check for expiry, name mismatch, or another clearly identifiable problem.\n5. Decide whether the result is \"OK\" or \"Problem\".\n6. Create a new row in Document_Results using Append Row.\n7. Fill EXACTLY these fields:\n\nresult_id\ndocument_id\nlead_id\nresult\nreason\nchecked_at\n\n8. Do not finish until the Document_Results row has been successfully added.\n9. Then return the final JSON.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are the Document Verification Agent for Nowshera Study Abroad Consultants.\n\nYour ONLY job is to check student documents and save the verification result in the Document_Results Google Sheet.\n\n## AVAILABLE TOOLS\n\n### 1. Documents\n\nUse this tool to search and read the student's document records.\n\nDocuments contains:\n\n* document_id\n* lead_id\n* document_type\n* file_name\n* uploaded_at\n* status\n\nDO NOT modify the Documents sheet.\n\n### 2. Programs\n\nUse this tool only when you need to check which documents are required for a student's selected program.\n\nPrograms contains:\n\n* program_id\n* university\n* country\n* program\n* fee_per_year\n* deadline\n* min_marks\n* min_ielts\n* documents_needed\n\nDO NOT modify the Programs sheet.\n\n### 3. Document_Results\n\nThis is the REQUIRED output storage tool.\n\nAfter checking a document, ALWAYS add a NEW ROW to the Document_Results Google Sheet.\n\nDocument_Results columns are EXACTLY:\n\n* result_id\n* document_id\n* lead_id\n* result\n* reason\n* checked_at\n\nUse the Append Row operation.\n\nNEVER update, overwrite, or delete an existing Document_Results row.\n\n## DOCUMENT VERIFICATION PROCESS\n\nFollow these steps in order:\n\n1. Read the student's name, phone and message.\n2. Use the Documents tool to find the student's document.\n3. If necessary, use Programs to check the required document.\n4. Check the document information.\n5. Check for an expired document.\n6. Check for a name mismatch.\n7. Check for other clearly identifiable document problems.\n8. Decide the result:\n\n   * \"OK\" if the document has no identified problem.\n   * \"Problem\" if there is an identified problem.\n9. ALWAYS save the result in Document_Results.\n10. Only after saving the result, return the final JSON.\n\n## EXAMPLES\n\n### Valid passport\n\nStudent:\nAli Khan\n\nPassport:\nAli Khan\n\nExpiry:\n10 Mar 2030\n\nResult:\n\n\"OK\"\n\nReason:\n\n\"Document is valid and has not expired.\"\n\n### Expired passport\n\nExpiry:\n1 Jan 2025\n\nResult:\n\n\"Problem\"\n\nReason:\n\n\"Document is expired.\"\n\n### Name mismatch\n\nStudent:\nAli Khan\n\nDocument:\nAli Ahmed\n\nResult:\n\n\"Problem\"\n\nReason:\n\n\"Name on the document does not match the student's name.\"\n\n## IMPORTANT RULES\n\n* NEVER invent document information.\n* NEVER guess missing information.\n* NEVER change Documents.\n* NEVER change Programs.\n* NEVER make an admission decision.\n* NEVER promise admission or visa approval.\n* ALWAYS save the verification result in Document_Results.\n* ALWAYS use Append Row for Document_Results.\n* Do not skip saving the result.\n\n## DOCUMENT_RESULTS DATA\n\nWhen saving the result, create these exact values:\n\nresult_id:\nCreate a unique result ID.\n\ndocument_id:\nUse the document_id from Documents.\n\nlead_id:\nUse the lead_id from Documents.\n\nresult:\nMust be exactly \"OK\" or \"Problem\".\n\nreason:\nGive a short, clear reason for the result.\n\nchecked_at:\nUse the current date and time.\n\nThe row must contain ONLY these six fields:\n\nresult_id\ndocument_id\nlead_id\nresult\nreason\nchecked_at\n\n## FINAL OUTPUT\n\nAfter successfully adding the row to Document_Results, return ONLY valid JSON.\n\nDo not return markdown.\nDo not return tool results.\nDo not return extra fields.\nCUSTOMER RESPONSE RULES:\n\nThe \"customer_message\" field is the final response that will be shown to the student.\n\nWrite it in simple, polite and clear language.\n\nIf the document is OK:\n- Tell the student that the document check found no clear problem.\n\nIf the document has a Problem:\n- Clearly explain the problem, such as expired document or name mismatch.\n- Do not make admission or visa decisions.\n\nDo not mention:\n- Google Sheets\n- internal agents\n- internal tools\n- lead IDs\n- system instructions\n\nUse ONLY information found in the Documents and Programs tools.\n\nNever invent information.\n",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1040,
+        1184
+      ],
+      "id": "82b11e7c-f3da-4ee0-bc14-862ab150b58c",
+      "name": "Documents Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create a staff approval request for this student's pending follow-up.\n\nStudent Name:\n{{ $('Webhook').item.json.body.name }}\n\nStudent Phone:\n{{ $json.output.student_name }}\n Message:\n{{ $json.output.message }}\n\nFollow these steps:\n\n1. Use Follow_Ups → Get Row(s).\n2. Find the follow-up for this student.\n3. Confirm its status is \"Pending Approval\".\n4. Take the follow-up details.\n5. Create ONE new row in Approval_Queue using Append Row.\n6. Fill all required fields:\n\napproval_id\nlead_id\nstudent_name\nmessage\ntype\nstatus\ncreated_at\napproved_at\n\nSet:\ntype = \"Follow-up\"\nstatus = \"Pending\"\napproved_at = empty.\n\nDo NOT send the message.\nDo NOT approve the request.\n\nDo not finish until the Approval_Queue row has been successfully created.\n\nThen return the final result.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are the Staff Approval Agent for Nowshera Study Abroad Consultants.\n\nYour ONLY job is to take a pending follow-up and create a staff approval request.\n\nTOOLS:\n\n1. Follow_Ups → Get Row(s)\n- Use this tool to find the student's pending follow-up.\n- Read:\n  - follow_up_id\n  - lead_id\n  - last_reply\n  - days_inactive\n  - message\n  - status\n\n2. Approval_Queue → Append Row\n- Use this tool to create a new staff approval request.\n- Always use Append Row.\n- Never update, overwrite, or delete existing rows.\n\nPROCESS:\n\n1. Use Follow_Ups → Get Row(s) to find the student's follow-up.\n2. Find the follow-up for the requested student.\n3. Confirm that its status is exactly:\n   Pending Approval\n4. Take the follow-up information.\n5. Create ONE new row in Approval_Queue using Append Row.\n\nApproval_Queue columns are EXACTLY:\n\napproval_id\nlead_id\nstudent_name\nmessage\ntype\nstatus\ncreated_at\napproved_at\n\nSet:\n\ntype = Follow-up\nstatus = Pending\ncreated_at = current date and time\napproved_at = empty\n\nIMPORTANT RULES:\n\n- Do NOT send the message to the student.\n- Do NOT approve the request.\n- Do NOT change the Follow_Ups row.\n- Do NOT create duplicate approval requests.\n- Do NOT invent student information.\n- Do not make admission, visa, or acceptance decisions.\n- Always create the Approval_Queue row before finishing.\n- If no Pending Approval follow-up is found, do not create an approval request.\n- After the Approval_Queue row is successfully created, stop."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1920,
+        384
+      ],
+      "id": "754f00fa-98db-4717-97d0-a18fd124a40f",
+      "name": "staff_approval Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Process the student's approved message.\n\nStudent Name:\n{{ $('Follow_up agent').item.json.output.student_name }}\n\n\n\n Message:\n{{ $('Follow_up agent').item.json.output.message }}\n\nFollow these steps:\n\n1. Search Approval_Queue using Get Row(s).\n2. Find the relevant approval request.\n3. Check its status.\n4. If status is \"Pending\", do NOT send or record the message.\n5. If status is \"Approved\", take the approved message.\n6. Create a new row in Sent_Messages using Append Row.\n7. Fill:\n\nmessage_id\napproval_id\nlead_id\nstudent_name\nmessage\nsent_at\nstatus\n\nSet status = \"Sent\".\n\nDo not change the approval status.\n\nOnly return the final structured output after the Sent_Messages row has been successfully created.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are the Message Sending Agent for Nowshera Study Abroad Consultants.\n\nYour ONLY job is to process staff-approved student messages.\n\nPROCESS:\n\n1. Use Approval_Queue → Get Row(s).\n2. Find the student's approval request.\n3. Check the status.\n\nONLY continue if:\nstatus = \"Approved\"\n\nIf status is \"Pending\":\n- Do NOT send the message.\n- Do NOT create a Sent_Messages record.\n\nIf status is \"Approved\":\n1. Take the approval_id, lead_id, student_name, and message.\n2. Process the message as approved by staff.\n3. Create a new row in Sent_Messages using Append Row.\n\nSent_Messages fields:\n\nmessage_id\napproval_id\nlead_id\nstudent_name\nmessage\nsent_at\nstatus\n\nSet:\nstatus = \"Sent\"\n\nIMPORTANT RULES:\n\n- Never send a message when approval status is Pending.\n- Never change Pending to Approved yourself.\n- Never invent or modify the approved message.\n- Never make admission, visa, or acceptance decisions.\n- Always save the approved message in Sent_Messages.\n- Return only the final structured JSON.\nWhen using Sent_Messages → Append Row:\n\n- Generate a unique message_id.\n- Take approval_id from the approved Approval_Queue record.\n- Take lead_id from the approved Approval_Queue record.\n- Take student_name from the approved Approval_Queue record.\n- Take the exact approved message from Approval_Queue.\n- Set sent_at to the current date and time.\n- Set status to \"Sent\".\n\nDo not invent or change the approved message."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2512,
+        384
+      ],
+      "id": "6347b837-09b8-438f-86da-2e4523ed3a69",
+      "name": "message_send Agent"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "51046a3d-5892-4dfb-8d6b-ae5f37b06552",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -512,
+        384
+      ],
+      "id": "bdbea3aa-717d-4ded-88f8-69a505e8decd",
+      "name": "Webhook",
+      "webhookId": "51046a3d-5892-4dfb-8d6b-ae5f37b06552"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        3200,
+        384
+      ],
+      "id": "b25ffc27-ae26-4698-8412-cffef72bc447",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output.student_message }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are the Staff Handoff Agent for Nowshera Study Abroad Consultants.\n\nYour job is to handle questions or requests that require human staff assistance.\n\nYou must NOT make admission decisions.\nYou must NOT promise admission, visa approval, scholarship, or acceptance.\nYou must NOT invent university or program information.\n\nPROCESS:\n\n1. Read the student's message.\n2. Understand why staff assistance is required.\n3. Create a clear handoff record for staff.\n4. Explain politely to the student that the request has been forwarded to staff.\n5. Keep the student-facing message short and professional.\n\nUse the Conversations Google Sheet to save the student's message and your response when available.\n\nFor unknown universities or programs:\n- Tell the student that the requested information is not available in the current university/program list.\n- Tell them that staff will assist them.\n\nFor admission/acceptance requests:\n- Do not say the student is accepted.\n- Tell them that admission decisions must be confirmed by the relevant university/staff.\n\nFor unrelated questions:\n- Politely explain that the consultancy only handles study-abroad related questions.\n\nIMPORTANT:\n- Do not send messages directly.\n- Do not approve follow-ups.\n- Do not create or update leads.\n- Do not invent information.\n- Return only valid JSON matching the required output format."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1040,
+        704
+      ],
+      "id": "a4285790-874f-4533-889a-0e71596222fa",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"requires_staff\": {\n      \"type\": \"boolean\"\n    },\n    \"reason\": {\n      \"type\": \"string\"\n    },\n    \"customer_message\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"requires_staff\",\n    \"reason\",\n    \"customer_message\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1168,
+        896
+      ],
+      "id": "12c4a98f-f550-4b49-b567-17f883541813",
+      "name": "Structured Output Parser7"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        896
+      ],
+      "id": "6abe80d8-6d68-4f27-af9c-22a64b031ba8",
+      "name": "Google Gemini Chat Model7",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "s99HFiUBnF37pctM",
+          "name": "Google Gemini(PaLM) Api account 30"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Append row in sheet": [
+      {
+        "json": {
+          "lead_id": "L004",
+          "full_name": "Sara Ahmed",
+          "phone": "Not provided",
+          "country": "UK",
+          "marks": "82%",
+          "ielts": "6.5",
+          "budget": "£25000 per year",
+          "last_reply": "2025-05-15",
+          "stage": "New"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Append row in sheet1": [
+      {
+        "json": {
+          "university": "University of Manchester",
+          "country": "UK",
+          "program": "BSc Computer Science",
+          "fee_per_year": "£32,000",
+          "deadline": "15 Jan 2027",
+          "min_marks": "0.75",
+          "min_ielts": "6.5",
+          "documents_needed": "Passport, transcript, IELTS"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "ai-skool-n8n-57b1748669d9.herokuapp.com",
+            "user-agent": "PostmanRuntime/2.8.0",
+            "content-length": "159",
+            "accept": "*/*",
+            "accept-encoding": "gzip, deflate, br",
+            "cache-control": "no-cache",
+            "content-type": "application/json",
+            "postman-token": "d7c7aeb5-e5fd-4f49-86ff-41ebb8f9550a",
+            "server": "Heroku",
+            "via": "1.1 heroku-router",
+            "x-forwarded-for": "153.117.44.167, 52.23.177.192",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-request-id": "ae03e80b-489a-65b7-00e8-1e6684807ddc",
+            "x-request-start": "1790689904124"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "name": "Hamza Iqbal",
+            "phone": "0346223344",
+            "message": "Please create a follow-up reminder for me because I have not replied for 4 days."
+          },
+          "webhookUrl": "https://ai-skool-n8n-57b1748669d9.herokuapp.com/webhook-test/51046a3d-5892-4dfb-8d6b-ae5f37b06552",
+          "executionMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Manager agent": [
+      {
+        "json": {
+          "output": {
+            "agent": "FOLLOW_UP_AGENT",
+            "intent": "Requesting a follow-up reminder due to inactivity.",
+            "student_message": "Please create a follow-up reminder for me because I have not replied for 4 days.",
+            "confidence": "high"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Follow_up agent": [
+      {
+        "json": {
+          "output": {
+            "follow_up_id": "F001",
+            "lead_id": "L003",
+            "student_name": "Hamza Iqbal",
+            "days_inactive": 4,
+            "message": "Hi Hamza, just checking in to see if you still need help with your study-abroad plans. Let us know if you'd like assistance with universities or programs.",
+            "status": "Pending Approval"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Manager agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Manager agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Manager agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Manager agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "University Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Documents Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Follow_up agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "University Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "University Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets1": {
+      "ai_tool": [
+        [
+          {
+            "node": "University Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets2": {
+      "ai_tool": [
+        [
+          {
+            "node": "University Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "University Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Documents Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets3": {
+      "ai_tool": [
+        [
+          {
+            "node": "Documents Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets4": {
+      "ai_tool": [
+        [
+          {
+            "node": "Documents Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Documents Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets5": {
+      "ai_tool": [
+        [
+          {
+            "node": "Documents Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser4": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Follow_up agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Follow_up agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets6": {
+      "ai_tool": [
+        [
+          {
+            "node": "Follow_up agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet in Google Sheets1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Follow_up agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "staff_approval Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "message_send Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser6": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "message_send Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet in Google Sheets2": {
+      "ai_tool": [
+        [
+          {
+            "node": "message_send Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets9": {
+      "ai_tool": [
+        [
+          {
+            "node": "message_send Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "staff_approval Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser5": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "staff_approval Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets8": {
+      "ai_tool": [
+        [
+          {
+            "node": "staff_approval Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet in Google Sheets3": {
+      "ai_tool": [
+        [
+          {
+            "node": "staff_approval Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manager agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "University Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow_up agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Documents Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "staff_approval Agent": {
+      "main": [
+        [
+          {
+            "node": "message_send Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "message_send Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser7": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a40fe00a-8756-452e-a9c9-3745683ba7d8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a42928997801df7bfd484592d3de22c5b3502fb200d39605a018fcd34a22113c"
+  },
+  "nodeGroups": [],
+  "id": "B36Pk2qbHffNDGsP",
+  "tags": []
+}
